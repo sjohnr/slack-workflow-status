@@ -159,23 +159,6 @@ async function main(): Promise<void> {
   let status_string = `${workflow_msg} ${context.actor}'s \`${context.eventName}\` on \`${branch_url}\``
   // Example: Workflow: My Workflow #14 completed in `1m 30s`
   const details_string = `Workflow: ${context.workflow} ${workflow_run_url} completed in \`${workflow_duration}\``
-
-  // Build Pull Request string if required
-  const pull_requests = (workflow_run.pull_requests as PullRequest[])
-    .filter(
-      pull_request =>
-        pull_request.base.repo.url === workflow_run.repository.url // exclude PRs from external repositories
-    )
-    .map(
-      pull_request =>
-        `<${workflow_run.repository.html_url}/pull/${pull_request.number}|#${pull_request.number}> from \`${pull_request.head.ref}\` to \`${pull_request.base.ref}\``
-    )
-    .join(', ')
-
-  if (pull_requests !== '') {
-    status_string = `${workflow_msg} ${context.actor}'s \`pull_request\` ${pull_requests}`
-  }
-
   const commit_message = `Commit: ${workflow_run.head_commit.message}`
 
   // We're using old style attachments rather than the new blocks because:
