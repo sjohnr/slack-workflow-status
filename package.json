@@ -7,12 +7,12 @@
   "main": "dist/index.js",
   "private": false,
   "bugs": {
-    "url": "https://github.com/Gamesight/slack-workflow-status/issues"
+    "url": "https://github.com/sjohnr/slack-workflow-status/issues"
   },
-  "homepage": "https://github.com/Gamesight/slack-workflow-status#readme",
+  "homepage": "https://github.com/sjohnr/slack-workflow-status#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gamesight/slack-workflow-status.git"
+    "url": "git+https://github.com/sjohnr/slack-workflow-status.git"
   },
   "engines": {
     "node": ">=12.22.7"
