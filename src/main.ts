@@ -71,14 +71,14 @@ async function main(): Promise<void> {
   // Auth github with octokit module
   const octokit = getOctokit(github_token)
   // Fetch workflow run data
-  const {data: workflow_run} = await octokit.actions.getWorkflowRun({
+  const {data: workflow_run} = await octokit.rest.actions.getWorkflowRun({
     owner: context.repo.owner,
     repo: context.repo.repo,
     run_id: context.runId
   })
 
   // Fetch workflow job information
-  const {data: jobs_response} = await octokit.actions.listJobsForWorkflowRun({
+  const {data: jobs_response} = await octokit.rest.actions.listJobsForWorkflowRun({
     owner: context.repo.owner,
     repo: context.repo.repo,
     run_id: context.runId
@@ -95,7 +95,7 @@ async function main(): Promise<void> {
   let job_fields: SlackMessageAttachementFields
 
   if (
-    completed_jobs.every(job => ['success', 'skipped'].includes(job.conclusion))
+    completed_jobs.every(job => ['success', 'skipped'].includes(job.conclusion || ''))
   ) {
     workflow_color = 'good'
     workflow_msg = 'Success:'
@@ -137,7 +137,7 @@ async function main(): Promise<void> {
 
     const job_duration = compute_duration({
       start: new Date(job.started_at),
-      end: new Date(job.completed_at)
+      end: job.completed_at ? new Date(job.completed_at) : new Date()
     })
 
     return {
@@ -178,7 +178,7 @@ async function main(): Promise<void> {
     status_string = `${workflow_msg} ${context.actor}'s \`pull_request\` ${pull_requests}`
   }
 
-  const commit_message = `Commit: ${workflow_run.head_commit.message}`
+  const commit_message = `Commit: ${workflow_run.head_commit?.message}`
 
   // We're using old style attachments rather than the new blocks because:
   // - Blocks don't allow colour indicators on messages
